@@ -1,4 +1,4 @@
-This is my personal iTerm Semantic History script. It handles any text that I control-click on in iTerm2.
+This is my personal iTerm semantic history script. It handles any text that I command-click on in iTerm2.
 
 Functions so far:
 
@@ -11,7 +11,8 @@ Probably most of these specific things will be useless or wrong for your setup -
 
 ### To Install: ###
 
-Go to Preferences -> Profiles -> Advanced -> Semantic History -> Always run command ... and enter something like:
+1. Fork and clone the repo.
+2. Go to Preferences -> Profiles -> Advanced -> Semantic History -> Always run command ... and enter something like:
 
-	python /absolute/path/to/iterm_semantic_history/script.py "\1" "\2" "\3" "\4" "\5"
+		python ~/iterm_semantic_history/script.py "\1" "\2" "\3" "\4" "\5"
     
