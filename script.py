@@ -1,35 +1,31 @@
 import sys
-from subprocess import call
-import re
+from subprocess import run
 import os
 
-filename, line_number, text_before_click, text_after_click, pwd = sys.argv[1:]
+filename, line_number, pwd = sys.argv[1:]
 
-def debug(s):
-    call(["osascript", "-e", 'tell app "Finder" to display dialog "%s"' % s.replace("'", 'SQUOTE').replace('"', 'DQUOTE')])
+pycharm_path = "/Applications/PyCharm.app/Contents/MacOS/pycharm"
 
-# handle URL paths
-if filename.startswith('http:') or filename.startswith('https:'):
-    call(["open", filename])
+# strip quotes before and after file name
+filename = filename.strip(':"\'')
 
-# handle file paths
-else:
-    pycharm_path = "/usr/local/bin/charm"
+# absolute path
+filename = os.path.join(pwd, filename)
 
-    # strip quotes before and after file name
-    filename = filename.strip(':"\'')
+# Construct line number
+linenumber = "--line %s" % line_number
 
-    # handle flake8 paths -- with an extra ##: on the end
-    if re.search(r'\d+\:\d+:$', filename):
-        filename = filename.rsplit(':', 2)[0]
+# Two caveats here:
+# 1. This form doesn't work but a pure string does work:
+#    >>> run([pycharm_path, linenumber, filename])
+# 2. `shell=True` is required. Otherwise, it'll confuse the pycharm
+#    command which is a thin wrapper.
+cmd = "%s %s %s" % (pycharm_path, linenumber, filename)
+#fp = open('/tmp/script.log', 'w')
+#fp.writelines([cmd])
+#fp.close()
+#print(cmd)
 
-    # remove first two directories from vagrant paths
-    if filename.startswith('/vagrant/'):
-        filename = filename.split('/', 3)[-1]
-
-    # absolute path
-    filename = os.path.join(pwd, filename)
-
-    # open
-    call([pycharm_path, filename])
-    call(["osascript", "-e", 'tell application "PyCharm" to activate'])
+# open
+run([cmd], shell=True)
+run(["osascript", "-e", 'tell application "PyCharm" to activate'])
